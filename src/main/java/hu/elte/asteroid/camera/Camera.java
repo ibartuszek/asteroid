@@ -7,8 +7,17 @@ import processing.core.PVector;
 
 public class Camera {
 
-    private final PApplet pApplet;
+    private static final float TIME_CONSTANT = 1000.0f;
+    private static final float Z_NEAR = 0.01f;
+    private static final float Z_FAR = 500.0f;
+    private static final float FOVY = PApplet.PI / 3;
+    private static final float ASPECT = Main.WIDTH / (float) Main.HEIGHT;
+    private static final int SPEED = 500;
+    private static final float MOUSE_POSITION_FACTOR = 100.0f;
+    private static final float BETA_MIN = 0.1f;
+    private static final float BETA_MAX = 3.1f;
 
+    private final PApplet pApplet;
     private final PVector eye;
     private final PVector up;
     private PVector at;
@@ -18,15 +27,13 @@ public class Camera {
     private float alpha = 0;
     private float beta = PApplet.PI / 2.0f;
 
-    private boolean is_move_up = false;
-    private boolean is_move_down = false;
-    private boolean is_move_forward = false;
-    private boolean is_move_backward = false;
-    private boolean is_move_right = false;
-    private boolean is_move_left = false;
+    private boolean isMoveForward = false;
+    private boolean isMoveBackward = false;
+    private boolean isMoveRight = false;
+    private boolean isMoveLeft = false;
 
-    private float speed = 500;
-    private float last_time;
+    private float speed = SPEED;
+    private float lastTime;
 
     private Camera(final PApplet pApplet) {
         this.pApplet = pApplet;
@@ -37,39 +44,38 @@ public class Camera {
 
     public static Camera createCamera(final PApplet pApplet) {
         Camera camera = new Camera(pApplet);
-        camera.last_time = pApplet.millis();
+        camera.lastTime = pApplet.millis();
         return camera;
     }
 
-    void applyCamera() {
+    private void applyCamera() {
         pApplet.camera(
             eye.x, eye.y, eye.z,
             at.x, at.y, at.z,
             up.x, up.y, up.z);
-
-        pApplet.perspective(PApplet.PI / 3, Main.WIDTH / (float) Main.HEIGHT, 0.01f, 1000.0f);
+        pApplet.perspective(FOVY, ASPECT, Z_NEAR, Z_FAR);
     }
 
     public void update() {
-        float delta_time = (pApplet.millis() - last_time) / 1000.0f;
-        last_time = pApplet.millis();
+        float passedTime = (pApplet.millis() - lastTime) / TIME_CONSTANT;
+        lastTime = pApplet.millis();
 
-        if (is_move_forward) {
-            PVector forward = GetForward().mult(delta_time * speed);
+        if (isMoveForward) {
+            PVector forward = getForward().mult(passedTime * speed);
             eye.add(forward);
             at.add(forward);
-        } else if (is_move_backward) {
-            PVector forward = GetForward().mult(delta_time * speed);
+        } else if (isMoveBackward) {
+            PVector forward = getForward().mult(passedTime * speed);
             eye.sub(forward);
             at.sub(forward);
         }
 
-        if (is_move_right) {
-            PVector right = GetRight().mult(delta_time * speed);
+        if (isMoveRight) {
+            PVector right = getRight().mult(passedTime * speed);
             eye.add(right);
             at.add(right);
-        } else if (is_move_left) {
-            PVector right = GetRight().mult(delta_time * speed);
+        } else if (isMoveLeft) {
+            PVector right = getRight().mult(passedTime * speed);
             eye.sub(right);
             at.sub(right);
         }
@@ -78,20 +84,22 @@ public class Camera {
             if (lastMousePos == null) {
                 lastMousePos = new PVector(pApplet.mouseX, pApplet.mouseY);
             } else {
-                float dx = (pApplet.mouseX - lastMousePos.x) / 100.0f;
-                float dy = (pApplet.mouseY - lastMousePos.y) / 100.0f;
+                float dx = (pApplet.mouseX - lastMousePos.x) / MOUSE_POSITION_FACTOR;
+                float dy = (pApplet.mouseY - lastMousePos.y) / MOUSE_POSITION_FACTOR;
 
                 alpha += dx;
                 beta -= dy;
 
-                if (beta < 0.1f) {
-                    beta = 0.1f;
-                } else if (beta > 3.1) {
-                    beta = 3.1f;
+                if (beta < BETA_MIN) {
+                    beta = BETA_MIN;
+                } else if (beta > BETA_MAX) {
+                    beta = BETA_MAX;
                 }
 
-                PVector P = new PVector(pApplet.sin(beta) * pApplet.cos(alpha), pApplet.cos(beta),
-                    pApplet.sin(beta) * pApplet.sin(alpha));
+                PVector P = new PVector(
+                    PApplet.sin(beta) * PApplet.cos(alpha),
+                    PApplet.cos(beta),
+                    PApplet.sin(beta) * PApplet.sin(alpha));
                 at = eye.copy().add(P);
 
                 lastMousePos.x = pApplet.mouseX;
@@ -100,34 +108,31 @@ public class Camera {
         } else {
             lastMousePos = null;
         }
-
-        //kamera beállítása
         applyCamera();
-
     }
 
-    PVector GetForward() {
+    private PVector getForward() {
         return at.copy().sub(eye).normalize();
     }
 
-    PVector GetRight() {
-        PVector forward = GetForward();
+    private PVector getRight() {
+        PVector forward = getForward();
         return forward.copy().cross(up).normalize();
     }
 
-    public void moveLeft(boolean on) {
-        is_move_left = on;
+    public void moveLeft(final boolean on) {
+        isMoveLeft = on;
     }
 
-    public void moveRight(boolean on) {
-        is_move_right = on;
+    public void moveRight(final boolean on) {
+        isMoveRight = on;
     }
 
-    public void moveForward(boolean on) {
-        is_move_forward = on;
+    public void moveForward(final boolean on) {
+        isMoveForward = on;
     }
 
-    public void moveBackward(boolean on) {
-        is_move_backward = on;
+    public void moveBackward(final boolean on) {
+        isMoveBackward = on;
     }
 }

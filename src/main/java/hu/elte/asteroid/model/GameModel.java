@@ -1,6 +1,7 @@
 package hu.elte.asteroid.model;
 
 import hu.elte.asteroid.components.Ship;
+
 import processing.core.PApplet;
 
 public class GameModel {
@@ -8,7 +9,7 @@ public class GameModel {
     private final PApplet pApplet;
     private final Ship ship;
 
-    private GameModel(final GameModelBuilder gameModelBuilder){
+    private GameModel(final GameModelBuilder gameModelBuilder) {
         this.pApplet = gameModelBuilder.pApplet;
         this.ship = Ship.createShip(pApplet);
     }
@@ -19,6 +20,18 @@ public class GameModel {
 
     public void update() {
         ship.update();
+    }
+
+    public void moveShipForward(boolean on) {
+        ship.moveForward(on);
+    }
+
+    public void rotateShipLeft(boolean on) {
+        ship.rotateLeft(on);
+    }
+
+    public void rotateShipRight(boolean on) {
+        ship.rotateRight(on);
     }
 
     public static class GameModelBuilder {

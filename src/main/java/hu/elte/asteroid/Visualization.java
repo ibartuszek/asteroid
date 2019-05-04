@@ -31,13 +31,13 @@ public class Visualization extends PApplet {
         this.camera = Camera.createCamera(this);
     }
 
-    public void update() {
+    private void update() {
         drawBackground();
         model.update();
         camera.update();
     }
 
-    public void drawBackground() {
+    private void drawBackground() {
         final Color backgroundColor = Color.decode(Main.BACKGROUND_COLOR);
         background(color(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue()));
     }
@@ -53,6 +53,15 @@ public class Visualization extends PApplet {
         } else if (key == 'd') {
             camera.moveRight(true);
         }
+
+        if (keyCode == UP) {
+            model.moveShipForward(true);
+        } else if (keyCode == LEFT) {
+            model.rotateShipLeft(true);
+        } else if (keyCode == RIGHT) {
+            model.rotateShipRight(true);
+        }
+
     }
 
     @Override
@@ -66,5 +75,14 @@ public class Visualization extends PApplet {
         } else if (key == 'd') {
             camera.moveRight(false);
         }
+
+        if (keyCode == UP) {
+            model.moveShipForward(false);
+        } else if (keyCode == LEFT) {
+            model.rotateShipLeft(false);
+        } else if (keyCode == RIGHT) {
+            model.rotateShipRight(false);
+        }
+
     }
 }
