@@ -62,6 +62,10 @@ public class Visualization extends PApplet {
             model.rotateShipRight(true);
         }
 
+        if (key == ' ') {
+            model.fire();
+        }
+
     }
 
     @Override

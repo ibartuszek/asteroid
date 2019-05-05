@@ -7,7 +7,7 @@ import java.awt.Color;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Ship {
+public class Ship extends Component {
 
     private static final double DELTA_ALPHA = 0.1;
     private static final float MAX_SPEED = 250.0f;
@@ -17,9 +17,8 @@ public class Ship {
     private static final int Z_SIDE_LENGTH = 50;
     private static final Color MAIN_COLOR = Color.decode("#474A51");
     private static final Color SUP_COLOR = Color.decode("#A9A9A9");
-    private final PApplet pApplet;
-    private final float acceleration = 100.0f;
-    private PVector position;
+    private static final float ACCELERATION = 100.0f;
+
     private float lastTime;
     private boolean isMoveForward;
     private float speed = 0.0f;
@@ -28,27 +27,19 @@ public class Ship {
     private boolean isRotateRight;
 
     private Ship(final PApplet pApplet) {
-        this.pApplet = pApplet;
-        this.position = new PVector(0, 0, 0);
-        this.lastTime = this.pApplet.millis();
+        super(MAIN_COLOR, SUP_COLOR, pApplet, new PVector(0, 0, 0));
+        this.lastTime = super.pApplet.millis();
     }
 
     public static Ship createShip(final PApplet pApplet) {
         return new Ship(pApplet);
     }
 
-    public void draw() {
-        pApplet.fill(MAIN_COLOR.getRed(), MAIN_COLOR.getGreen(), MAIN_COLOR.getBlue());
-        pApplet.stroke(SUP_COLOR.getRed(), SUP_COLOR.getGreen(), SUP_COLOR.getBlue());
-        pApplet.pushMatrix();
-        pApplet.translate(position.x, position.y, position.z);
-        pApplet.rotateY(-PApplet.PI / 2);
-        pApplet.rotateY(-alpha - PApplet.PI);
-        pApplet.rotateZ(pApplet.millis() / TIME_CONSTANT);
-
+    @Override
+    protected void drawCustomShape() {
+        pApplet.rotateY(-alpha + PApplet.PI / 2);
+        pApplet.rotateZ(PApplet.PI / 4);
         drawShipShape();
-
-        pApplet.popMatrix();
     }
 
     private void drawShipShape() {
@@ -90,12 +81,12 @@ public class Ship {
         float deltaTime = (pApplet.millis() - lastTime) / TIME_CONSTANT;
         lastTime = pApplet.millis();
 
-        PVector forward = getForward();
+        PVector forward = getForward(alpha);
 
         if (isMoveForward) {
-            speed = speed < MAX_SPEED ? speed + deltaTime * acceleration : MAX_SPEED;
+            speed = speed < MAX_SPEED ? speed + deltaTime * ACCELERATION : MAX_SPEED;
         } else {
-            speed = speed > 0 ? speed - deltaTime * acceleration : 0;
+            speed = speed > 0 ? speed - deltaTime * ACCELERATION : 0;
         }
 
         forward.mult(deltaTime * speed);
@@ -106,10 +97,6 @@ public class Ship {
         } else if (isRotateRight) {
             alpha += DELTA_ALPHA;
         }
-    }
-
-    private PVector getForward() {
-        return new PVector(PApplet.cos(alpha), 0, PApplet.sin(alpha));
     }
 
     public void moveForward(boolean on) {
@@ -123,4 +110,9 @@ public class Ship {
     public void rotateRight(boolean on) {
         isRotateRight = on;
     }
+
+    float getAlpha() {
+        return alpha;
+    }
+
 }

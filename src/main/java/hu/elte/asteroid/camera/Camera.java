@@ -9,10 +9,10 @@ public class Camera {
 
     private static final float TIME_CONSTANT = 1000.0f;
     private static final float Z_NEAR = 0.01f;
-    private static final float Z_FAR = 500.0f;
+    private static final float Z_FAR = 600.0f;
     private static final float FOVY = PApplet.PI / 3;
     private static final float ASPECT = Main.WIDTH / (float) Main.HEIGHT;
-    private static final int SPEED = 500;
+    private static final int SPEED = 300;
     private static final float MOUSE_POSITION_FACTOR = 100.0f;
     private static final float BETA_MIN = 0.1f;
     private static final float BETA_MAX = 3.1f;
@@ -32,7 +32,6 @@ public class Camera {
     private boolean isMoveRight = false;
     private boolean isMoveLeft = false;
 
-    private float speed = SPEED;
     private float lastTime;
 
     private Camera(final PApplet pApplet) {
@@ -60,6 +59,7 @@ public class Camera {
         float passedTime = (pApplet.millis() - lastTime) / TIME_CONSTANT;
         lastTime = pApplet.millis();
 
+        float speed = SPEED;
         if (isMoveForward) {
             PVector forward = getForward().mult(passedTime * speed);
             eye.add(forward);
