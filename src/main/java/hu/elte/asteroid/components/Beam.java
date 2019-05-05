@@ -35,6 +35,7 @@ public class Beam extends ParametricComponent {
 
     @Override
     protected void drawCustomShape() {
+        pApplet.translate(-LENGTH / 2, 0, 0);
         pApplet.rotateZ(-PApplet.PI / 2);
         pApplet.rotateX(alpha);
         drawTop();
@@ -45,6 +46,11 @@ public class Beam extends ParametricComponent {
         pApplet.beginShape(PApplet.TRIANGLES);
         drawParametricShape();
         pApplet.endShape();
+    }
+
+    @Override
+    public float getRadius() {
+        return LENGTH;
     }
 
     private void drawTop() {
@@ -85,9 +91,7 @@ public class Beam extends ParametricComponent {
     public void update() {
         float deltaTime = (pApplet.millis() - lastTime) / TIME_CONSTANT;
         lastTime = pApplet.millis();
-        PVector forward = getForward(alpha);
-        forward.mult(deltaTime * SPEED);
-        position.add(forward);
+        updatePostioion(deltaTime, alpha, SPEED);
         distance = position.copy().sub(startPosition).mag();
         removeAble = removeAble || distance > MAX_DISTANCE;
     }

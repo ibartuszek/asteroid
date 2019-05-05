@@ -39,4 +39,6 @@ public abstract class Component {
         return position;
     }
 
+    public abstract float getRadius();
+
 }

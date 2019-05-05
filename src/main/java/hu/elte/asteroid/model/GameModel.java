@@ -54,6 +54,7 @@ public class GameModel {
         beamList.forEach(Beam::update);
         asteroidList.forEach(Asteroid::update);
         beamList.removeIf(Beam::isRemoveable);
+        // beamList.stream().forEach(beam -> asteroidList.stream().forEach());
     }
 
     public void moveShipForward(boolean on) {

@@ -55,4 +55,10 @@ abstract class ParametricComponent extends Component {
 
     abstract PVector getNormal(float u, float v);
 
+    protected void updatePostioion(final float deltaTime, final float alpha, final float speed) {
+        PVector forward = getForward(alpha);
+        forward.mult(deltaTime * speed);
+        position.add(forward);
+    }
+
 }

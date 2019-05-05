@@ -37,9 +37,15 @@ public class Ship extends Component {
 
     @Override
     protected void drawCustomShape() {
+        pApplet.translate(-Z_SIDE_LENGTH / 2, 0, 0);
         pApplet.rotateY(-alpha + PApplet.PI / 2);
         pApplet.rotateZ(PApplet.PI / 4);
         drawShipShape();
+    }
+
+    @Override
+    public float getRadius() {
+        return Z_SIDE_LENGTH;
     }
 
     private void drawShipShape() {

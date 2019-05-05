@@ -78,6 +78,16 @@ public class Asteroid extends ParametricComponent {
         pApplet.endShape();
     }
 
+    public boolean isCollisioning(Component component) {
+        float distance = component.getPosition().copy().sub(position).mag();
+        return distance < component.getRadius() + getRadius();
+    }
+
+    @Override
+    public float getRadius() {
+        return size.getRadius();
+    }
+
     @Override
     PVector getPosition(float u, float v) {
         float alpha = u * 2 * PApplet.PI;
@@ -108,9 +118,9 @@ public class Asteroid extends ParametricComponent {
             time = lastTime;
             changeDirection();
         }
-        PVector forward = getForward(alpha);
-        forward.mult(deltaTime * SPEED);
-        position.add(forward);
+        updatePostioion(deltaTime, alpha, SPEED);
+        distance = position.copy().sub(shipPosition).mag();
+        removeAble = removeAble || distance > MAX_DISTANCE;
     }
 
     private void changeDirection() {
