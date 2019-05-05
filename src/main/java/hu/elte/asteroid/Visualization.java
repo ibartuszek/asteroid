@@ -6,9 +6,11 @@ import hu.elte.asteroid.camera.Camera;
 import hu.elte.asteroid.model.GameModel;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 
 public class Visualization extends PApplet {
 
+    private PImage asteroidTexture;
     private GameModel model;
     private Camera camera;
 
@@ -25,10 +27,13 @@ public class Visualization extends PApplet {
 
     @Override
     public void setup() {
+        this.asteroidTexture = loadImage("asteroidTexture.jpg");
         this.model = new GameModel.GameModelBuilder()
             .withPApplet(this)
+            .withAsteroidTexture(asteroidTexture)
             .build();
         this.camera = Camera.createCamera(this);
+
     }
 
     private void update() {

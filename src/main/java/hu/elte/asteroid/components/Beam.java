@@ -11,9 +11,9 @@ public class Beam extends ParametricComponent {
     private static final float TIME_CONSTANT = 1000.0f;
     private static final Color MAIN_COLOR = Color.decode("#90EE90");
     private static final Color SUP_COLOR = Color.decode("#90EE90");
-    private static final int LENGTH = 40;
-    private static final int DIAMETER = 2;
-    private static final float SPEED = 500.0f;
+    private static final float LENGTH = 5.0f;
+    private static final float DIAMETER = 0.5f;
+    private static final float SPEED = 200.0f;
     private final PVector startPosition;
     private final float alpha;
     private float distance;
@@ -42,7 +42,9 @@ public class Beam extends ParametricComponent {
         pApplet.translate(0, LENGTH, 0);
         drawTop();
         pApplet.popMatrix();
+        pApplet.beginShape(PApplet.TRIANGLES);
         drawParametricShape();
+        pApplet.endShape();
     }
 
     private void drawTop() {

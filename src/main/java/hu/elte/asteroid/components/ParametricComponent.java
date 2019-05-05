@@ -5,10 +5,10 @@ import java.awt.Color;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public abstract class ParametricComponent extends Component {
+abstract class ParametricComponent extends Component {
 
-    float u_detailness = 20;
-    float v_detailness = 20;
+    float u_detailness = 20.0f;
+    float v_detailness = 20.0f;
 
     ParametricComponent(final Color mainColor, final Color supColor,
         final PApplet pApplet, final PVector position) {
@@ -16,8 +16,6 @@ public abstract class ParametricComponent extends Component {
     }
 
     void drawParametricShape() {
-        pApplet.beginShape(PApplet.TRIANGLES);
-
         float step_u = 1.0f / u_detailness;
         float step_v = 1.0f / v_detailness;
 
@@ -45,7 +43,7 @@ public abstract class ParametricComponent extends Component {
 
             }
         }
-        pApplet.endShape();
+
     }
 
     private void createVertex(float v, PVector p2, PVector n2, float v2) {

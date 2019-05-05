@@ -35,4 +35,8 @@ public abstract class Component {
         return new PVector(PApplet.cos(alpha), 0, PApplet.sin(alpha));
     }
 
+    public PVector getPosition() {
+        return position;
+    }
+
 }

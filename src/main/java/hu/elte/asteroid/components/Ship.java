@@ -9,16 +9,16 @@ import processing.core.PVector;
 
 public class Ship extends Component {
 
+    public static final float GRAVITY_FACTOR = 200.0f;
     private static final double DELTA_ALPHA = 0.1;
-    private static final float MAX_SPEED = 250.0f;
+    private static final float MAX_SPEED = 100.0f;
     private static final float TIME_CONSTANT = 1000.0f;
-    private static final int X_SIDE_LENGTH = 20;
-    private static final int Y_SIDE_LENGTH = 20;
-    private static final int Z_SIDE_LENGTH = 50;
+    private static final float X_SIDE_LENGTH = 5.0f;
+    private static final float Y_SIDE_LENGTH = 5.0f;
+    private static final float Z_SIDE_LENGTH = 10.0f;
     private static final Color MAIN_COLOR = Color.decode("#474A51");
     private static final Color SUP_COLOR = Color.decode("#A9A9A9");
-    private static final float ACCELERATION = 100.0f;
-
+    private static final float ACCELERATION = 50.0f;
     private float lastTime;
     private boolean isMoveForward;
     private float speed = 0.0f;
