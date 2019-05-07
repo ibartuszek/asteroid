@@ -44,7 +44,7 @@ public class Asteroid extends ParametricComponent {
         this.beta = new PVector(getRandomFloat(0.5f), getRandomFloat(0.5f), getRandomFloat(0.5f));
     }
 
-    public static Asteroid createSmallerAsteroid(final PVector position, final Asteroid asteroid) {
+    private static Asteroid createSmallerAsteroid(final PVector position, final Asteroid asteroid) {
         Asteroid result = null;
         if (asteroid != null) {
             AsteroidSize asteroidSize = AsteroidSize.getSmallerSize(asteroid.size);
@@ -78,9 +78,31 @@ public class Asteroid extends ParametricComponent {
         pApplet.endShape();
     }
 
-    public boolean isCollisioning(Component component) {
-        float distance = component.getPosition().copy().sub(position).mag();
-        return distance < component.getRadius() + getRadius();
+    public Component isCollision(Component other) {
+        Component component = null;
+        float distance = other.getPosition().copy().sub(position).mag();
+        if (distance < other.getRadius() + getRadius()) {
+            removeAble = true;
+            component = other;
+        }
+        return component;
+    }
+
+    public Component isCollision(final List<? extends Component> componentList) {
+        Component component = null;
+        for (int index = 0; index < componentList.size() && !removeAble; index++) {
+            if (componentList.get(index) != this) {
+                component = isCollision(componentList.get(index));
+            }
+        }
+        return component;
+    }
+
+    public static void createTwoSmallerAsteroids(final Asteroid asteroid) {
+        if (asteroid.size.equals(AsteroidSize.NORMAL) || asteroid.size.equals(AsteroidSize.BIG)) {
+            asteroid.asteroidList.add(createSmallerAsteroid(asteroid.position.copy().add(new PVector(asteroid.size.getRadius(), 0, 0)), asteroid));
+            asteroid.asteroidList.add(createSmallerAsteroid(asteroid.position.copy().add(new PVector(0, 0, asteroid.size.getRadius())), asteroid));
+        }
     }
 
     @Override
@@ -137,6 +159,10 @@ public class Asteroid extends ParametricComponent {
 
     PVector getSizedPosition() {
         return position.copy().mult(size.getGravityFactor());
+    }
+
+    public boolean isRemoveable() {
+        return removeAble;
     }
 
     public static class AsteroidBuilder {
