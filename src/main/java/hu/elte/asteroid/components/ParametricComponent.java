@@ -5,10 +5,15 @@ import java.awt.Color;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-abstract class ParametricComponent extends Component {
+public abstract class ParametricComponent extends Component {
 
     float u_detailness = 20.0f;
     float v_detailness = 20.0f;
+    boolean removeAble = false;
+    float distance;
+    float alpha;
+    float lastTime;
+
 
     ParametricComponent(final Color mainColor, final Color supColor,
         final PApplet pApplet, final PVector position) {
@@ -59,6 +64,10 @@ abstract class ParametricComponent extends Component {
         PVector forward = getForward(alpha);
         forward.mult(deltaTime * speed);
         position.add(forward);
+    }
+
+    public boolean isRemoveable() {
+        return removeAble;
     }
 
 }

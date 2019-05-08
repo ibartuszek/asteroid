@@ -24,10 +24,6 @@ public class Asteroid extends ParametricComponent {
     private final List<Asteroid> asteroidList;
     private final AsteroidSize size;
     private final PVector beta;
-    private float distance;
-    private float alpha;
-    private float lastTime;
-    private boolean removeAble;
     private float time;
 
     private Asteroid(final AsteroidBuilder asteroidBuilder) {
@@ -40,7 +36,6 @@ public class Asteroid extends ParametricComponent {
         this.asteroidTexture = asteroidBuilder.asteroidTexture;
         this.distance = 0.0f;
         this.lastTime = super.pApplet.millis();
-        this.removeAble = false;
         this.beta = new PVector(getRandomFloat(0.5f), getRandomFloat(0.5f), getRandomFloat(0.5f));
     }
 
@@ -88,11 +83,14 @@ public class Asteroid extends ParametricComponent {
         return component;
     }
 
-    public Component isCollision(final List<? extends Component> componentList) {
+    public Component isCollision(final List<? extends ParametricComponent> componentList) {
         Component component = null;
         for (int index = 0; index < componentList.size() && !removeAble; index++) {
             if (componentList.get(index) != this) {
                 component = isCollision(componentList.get(index));
+                if (component instanceof ParametricComponent) {
+                    ((ParametricComponent) component).removeAble = true;
+                }
             }
         }
         return component;
@@ -151,18 +149,18 @@ public class Asteroid extends ParametricComponent {
         asteroidList.stream()
             .filter(asteroid -> !asteroid.equals(this))
             .forEach(asteroid -> differences.add(asteroid.getSizedPosition().sub(getSizedPosition())));
-        List<Float> resultList = new ArrayList<>();
-        differences.forEach(vector -> resultList.add(PApplet.atan2(vector.z, vector.x)));
-        float result = resultList.stream().reduce(0.0f, Float::sum) / resultList.size();
-        alpha = result + getRandomFloat(0.5f) / 5.0f;
+        PVector result = new PVector(0,0,0);
+        differences.stream().forEach(result::add);
+        alpha = PApplet.atan2(result.z, result.x);
+
+        // List<Float> resultList = new ArrayList<>();
+        // differences.forEach(vector -> resultList.add(PApplet.atan2(vector.z, vector.x)));
+        // float result = resultList.stream().reduce(0.0f, Float::sum) / resultList.size();
+        // alpha = result + getRandomFloat(0.5f) / 5.0f;
     }
 
     PVector getSizedPosition() {
         return position.copy().mult(size.getGravityFactor());
-    }
-
-    public boolean isRemoveable() {
-        return removeAble;
     }
 
     public static class AsteroidBuilder {

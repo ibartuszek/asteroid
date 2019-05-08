@@ -6,6 +6,7 @@ import java.util.List;
 import hu.elte.asteroid.components.Asteroid;
 import hu.elte.asteroid.components.Beam;
 import hu.elte.asteroid.components.Component;
+import hu.elte.asteroid.components.ParametricComponent;
 import hu.elte.asteroid.components.Ship;
 
 import processing.core.PApplet;
@@ -19,6 +20,7 @@ public class GameModel {
     private Ship ship;
     private final List<Beam> beamList;
     private final List<Asteroid> asteroidList;
+    private boolean gameOver = false;
 
     private GameModel(final GameModelBuilder gameModelBuilder) {
         this.pApplet = gameModelBuilder.pApplet;
@@ -45,7 +47,7 @@ public class GameModel {
     }
 
     public void draw() {
-        if (ship != null) {
+        if (!gameOver) {
             ship.draw();
         }
         beamList.forEach(Beam::draw);
@@ -53,14 +55,14 @@ public class GameModel {
     }
 
     public void update() {
-        ship.update();
         beamList.forEach(Beam::update);
         asteroidList.forEach(Asteroid::update);
         beamList.removeIf(Beam::isRemoveable);
         asteroidList.removeIf(Asteroid::isRemoveable);
-
-        boolean gameOver = collisionWithShip(ship);
-        if (gameOver) {
+        if (!gameOver) {
+            ship.update();
+            gameOver = collisionWithShip(ship);
+        } else {
             ship = null;
         }
         collision(beamList);
@@ -68,31 +70,42 @@ public class GameModel {
     }
 
     private boolean collisionWithShip(final Ship ship) {
-        Component removable = asteroidList.stream().filter(asteroid -> asteroid.isCollision(ship) != null).findFirst().orElse(null);
+        Component removable = asteroidList.stream()
+                .filter(asteroid -> asteroid.isCollision(ship) != null)
+                .findFirst()
+                .orElse(null);
         return removable != null;
     }
 
-    private void collision(final List<? extends  Component> componentList) {
-        Component removable = asteroidList.stream().filter(asteroid -> asteroid.isCollision(componentList) != null).findFirst().orElse(null);
-        if (removable != null) {
-            Asteroid.createTwoSmallerAsteroids((Asteroid) removable);
-        }
+    private void collision(final List<? extends ParametricComponent> componentList) {
+        asteroidList.stream()
+                .filter(asteroid -> asteroid.isCollision(componentList) != null)
+                .findFirst()
+                .ifPresent(Asteroid::createTwoSmallerAsteroids);
     }
 
     public void moveShipForward(boolean on) {
-        ship.moveForward(on);
+        if (!gameOver) {
+            ship.moveForward(on);
+        }
     }
 
     public void rotateShipLeft(boolean on) {
-        ship.rotateLeft(on);
+        if (!gameOver) {
+            ship.rotateLeft(on);
+        }
     }
 
     public void rotateShipRight(boolean on) {
-        ship.rotateRight(on);
+        if (!gameOver) {
+            ship.rotateRight(on);
+        }
     }
 
     public void fire() {
-        beamList.add(Beam.createBeam(pApplet, ship));
+        if (!gameOver) {
+            beamList.add(Beam.createBeam(pApplet, ship));
+        }
     }
 
     public static class GameModelBuilder {

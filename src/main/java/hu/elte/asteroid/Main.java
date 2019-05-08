@@ -9,11 +9,9 @@ public class Main {
 
     public static final int WIDTH = 800;
     public static final int HEIGHT = 600;
-    // public static final String BACKGROUND_COLOR = "#000000";
-    public static final String BACKGROUND_COLOR = "#FFFFFF";
+    public static final String BACKGROUND_COLOR = "#000000";
 
     public static void main(final String[] args) {
-        // Visualization.createVisualization();
         PApplet.main("hu.elte.asteroid.Visualization");
     }
 

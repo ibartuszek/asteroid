@@ -15,10 +15,6 @@ public class Beam extends ParametricComponent {
     private static final float DIAMETER = 0.5f;
     private static final float SPEED = 200.0f;
     private final PVector startPosition;
-    private final float alpha;
-    private float distance;
-    private float lastTime;
-    private boolean removeAble;
 
     private Beam(final PApplet pApplet, final Ship ship) {
         super(MAIN_COLOR, SUP_COLOR, pApplet, ship.position.copy());
@@ -94,10 +90,6 @@ public class Beam extends ParametricComponent {
         updatePostioion(deltaTime, alpha, SPEED);
         distance = position.copy().sub(startPosition).mag();
         removeAble = removeAble || distance > MAX_DISTANCE;
-    }
-
-    public boolean isRemoveable() {
-        return removeAble;
     }
 
 }
