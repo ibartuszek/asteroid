@@ -2,6 +2,7 @@ package hu.elte.asteroid.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import hu.elte.asteroid.components.Asteroid;
 import hu.elte.asteroid.components.Beam;
@@ -21,6 +22,8 @@ public class GameModel {
     private final List<Beam> beamList;
     private final List<Asteroid> asteroidList;
     private boolean gameOver = false;
+    private static final int MINIMUM_NUMBER_OF_ASTEROID = 5;
+    private static final Random RANDOM = new Random();
 
     private GameModel(final GameModelBuilder gameModelBuilder) {
         this.pApplet = gameModelBuilder.pApplet;
@@ -67,6 +70,7 @@ public class GameModel {
         }
         collision(beamList);
         collision(asteroidList);
+        makeNewAsteroids();
     }
 
     private boolean collisionWithShip(final Ship ship) {
@@ -105,6 +109,19 @@ public class GameModel {
     public void fire() {
         if (!gameOver) {
             beamList.add(Beam.createBeam(pApplet, ship));
+        }
+    }
+
+    private void makeNewAsteroids() {
+        if (asteroidList.size() < MINIMUM_NUMBER_OF_ASTEROID && !gameOver) {
+            this.asteroidList.add(new Asteroid.AsteroidBuilder()
+                    .withPapplet(this.pApplet)
+                    .withPosition(new PVector(ship.getPosition().x - 200, 0, RANDOM.nextInt(200) - 100))
+                    .withShipPosition(ship.getPosition())
+                    .withAsteroidList(asteroidList)
+                    .withRandomSize()
+                    .withTexture(asteroidTexture)
+                    .build());
         }
     }
 
