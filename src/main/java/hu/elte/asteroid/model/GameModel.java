@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import hu.elte.asteroid.camera.Camera;
 import hu.elte.asteroid.components.Asteroid;
 import hu.elte.asteroid.components.Beam;
 import hu.elte.asteroid.components.Component;
@@ -16,17 +17,20 @@ import processing.core.PVector;
 
 public class GameModel {
 
+    private static final float DISTANCE = 300.0f;
+    private static final int MINIMUM_NUMBER_OF_ASTEROID = 3;
     private final PApplet pApplet;
+    private final Camera camera;
     private final PImage asteroidTexture;
     private Ship ship;
     private final List<Beam> beamList;
     private final List<Asteroid> asteroidList;
     private boolean gameOver = false;
-    private static final int MINIMUM_NUMBER_OF_ASTEROID = 5;
-    private static final Random RANDOM = new Random();
+
 
     private GameModel(final GameModelBuilder gameModelBuilder) {
         this.pApplet = gameModelBuilder.pApplet;
+        this.camera = gameModelBuilder.camera;
         this.asteroidTexture = gameModelBuilder.asteroidTexture;
         this.ship = Ship.createShip(pApplet);
         this.beamList = new ArrayList<>();
@@ -116,7 +120,7 @@ public class GameModel {
         if (asteroidList.size() < MINIMUM_NUMBER_OF_ASTEROID && !gameOver) {
             this.asteroidList.add(new Asteroid.AsteroidBuilder()
                     .withPapplet(this.pApplet)
-                    .withPosition(new PVector(ship.getPosition().x - 200, 0, RANDOM.nextInt(200) - 100))
+                    .withPosition(ship.getRandomBackPosition(DISTANCE))
                     .withShipPosition(ship.getPosition())
                     .withAsteroidList(asteroidList)
                     .withRandomSize()
@@ -128,6 +132,7 @@ public class GameModel {
     public static class GameModelBuilder {
         private PApplet pApplet;
         private PImage asteroidTexture;
+        private Camera camera;
 
         public GameModel build() {
             return new GameModel(this);
@@ -140,6 +145,11 @@ public class GameModel {
 
         public GameModelBuilder withAsteroidTexture(final PImage asteroidTexture) {
             this.asteroidTexture = asteroidTexture;
+            return this;
+        }
+
+        public GameModelBuilder withCamera(final Camera camera) {
+            this.camera = camera;
             return this;
         }
     }

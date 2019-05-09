@@ -28,12 +28,12 @@ public class Visualization extends PApplet {
     @Override
     public void setup() {
         this.asteroidTexture = loadImage("asteroidTexture.jpg");
-        this.model = new GameModel.GameModelBuilder()
-            .withPApplet(this)
-            .withAsteroidTexture(asteroidTexture)
-            .build();
         this.camera = Camera.createCamera(this);
-
+        this.model = new GameModel.GameModelBuilder()
+                .withPApplet(this)
+                .withAsteroidTexture(asteroidTexture)
+                .withCamera(this.camera)
+                .build();
     }
 
     private void update() {

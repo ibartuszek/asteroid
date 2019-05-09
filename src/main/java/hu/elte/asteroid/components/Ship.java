@@ -3,13 +3,14 @@ package hu.elte.asteroid.components;
 import static processing.core.PConstants.TRIANGLES;
 
 import java.awt.Color;
+import java.util.Random;
 
 import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Ship extends Component {
 
-    public static final float GRAVITY_FACTOR = 200.0f;
+    static final float GRAVITY_FACTOR = 200.0f;
     private static final double DELTA_ALPHA = 0.1;
     private static final float MAX_SPEED = 100.0f;
     private static final float TIME_CONSTANT = 1000.0f;
@@ -25,6 +26,7 @@ public class Ship extends Component {
     private float alpha;
     private boolean isRotateLeft;
     private boolean isRotateRight;
+    private static final Random RANDOM = new Random();
 
     private Ship(final PApplet pApplet) {
         super(MAIN_COLOR, SUP_COLOR, pApplet, new PVector(0, 0, 0));
@@ -121,4 +123,10 @@ public class Ship extends Component {
         return alpha;
     }
 
+    public PVector getRandomBackPosition(final float distance) {
+        PVector backward = getForward(alpha).mult(-1);
+        backward.x = backward.x * RANDOM.nextFloat() ;
+        backward.z = backward.z * RANDOM.nextFloat() ;
+        return backward.mult(distance);
+    }
 }
