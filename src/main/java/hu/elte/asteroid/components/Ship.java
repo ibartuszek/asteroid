@@ -10,6 +10,7 @@ import processing.core.PVector;
 
 public class Ship extends Component {
 
+    public static final float CAMERA_DISTANCE = 100.0f;
     static final float GRAVITY_FACTOR = 200.0f;
     private static final double DELTA_ALPHA = 0.1;
     private static final float MAX_SPEED = 100.0f;
@@ -20,13 +21,13 @@ public class Ship extends Component {
     private static final Color MAIN_COLOR = Color.decode("#474A51");
     private static final Color SUP_COLOR = Color.decode("#A9A9A9");
     private static final float ACCELERATION = 50.0f;
+    private static final Random RANDOM = new Random();
     private float lastTime;
     private boolean isMoveForward;
     private float speed = 0.0f;
     private float alpha;
     private boolean isRotateLeft;
     private boolean isRotateRight;
-    private static final Random RANDOM = new Random();
 
     private Ship(final PApplet pApplet) {
         super(MAIN_COLOR, SUP_COLOR, pApplet, new PVector(0, 0, 0));
@@ -86,20 +87,7 @@ public class Ship extends Component {
     }
 
     public void update() {
-        float deltaTime = (pApplet.millis() - lastTime) / TIME_CONSTANT;
-        lastTime = pApplet.millis();
-
-        PVector forward = getForward(alpha);
-
-        if (isMoveForward) {
-            speed = speed < MAX_SPEED ? speed + deltaTime * ACCELERATION : MAX_SPEED;
-        } else {
-            speed = speed > 0 ? speed - deltaTime * ACCELERATION : 0;
-        }
-
-        forward.mult(deltaTime * speed);
-        position.add(forward);
-
+        position.add(getForwardPosition());
         if (isRotateLeft) {
             alpha -= DELTA_ALPHA;
         } else if (isRotateRight) {
@@ -125,8 +113,24 @@ public class Ship extends Component {
 
     public PVector getRandomBackPosition(final float distance) {
         PVector backward = getForward(alpha).mult(-1);
-        backward.x = backward.x * RANDOM.nextFloat() ;
-        backward.z = backward.z * RANDOM.nextFloat() ;
+        backward.x = backward.x * RANDOM.nextFloat();
+        backward.z = backward.z * RANDOM.nextFloat();
         return backward.mult(distance);
+    }
+
+    public PVector getForwardPosition() {
+        float deltaTime = (pApplet.millis() - lastTime) / TIME_CONSTANT;
+        lastTime = pApplet.millis();
+        PVector forward = getForward(alpha);
+        if (isMoveForward) {
+            speed = speed < MAX_SPEED ? speed + deltaTime * ACCELERATION : MAX_SPEED;
+        } else {
+            speed = speed > 0 ? speed - deltaTime * ACCELERATION : 0;
+        }
+        return forward.mult(deltaTime * speed);
+    }
+
+    public boolean isMoveForward() {
+        return isMoveForward;
     }
 }
