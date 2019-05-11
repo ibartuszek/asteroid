@@ -10,7 +10,6 @@ import processing.core.PVector;
 
 public class Ship extends Component {
 
-    public static final float CAMERA_DISTANCE = 100.0f;
     static final float GRAVITY_FACTOR = 200.0f;
     private static final double DELTA_ALPHA = 0.1;
     private static final float MAX_SPEED = 100.0f;
@@ -42,7 +41,6 @@ public class Ship extends Component {
     protected void drawCustomShape() {
         pApplet.translate(-Z_SIDE_LENGTH / 2, 0, 0);
         pApplet.rotateY(-alpha + PApplet.PI / 2);
-        pApplet.rotateZ(PApplet.PI / 4);
         drawShipShape();
     }
 
@@ -59,31 +57,23 @@ public class Ship extends Component {
     }
 
     private void drawTetrahedron() {
-        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, -Y_SIDE_LENGTH / 2.0f, 0);
+        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, 0, 0);
         pApplet.vertex(0, 0, Z_SIDE_LENGTH);
-        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, Y_SIDE_LENGTH / 2.0f, 0);
+        pApplet.vertex(0, -Y_SIDE_LENGTH, 0);
 
-        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, Y_SIDE_LENGTH / 2.0f, 0);
+        pApplet.vertex(0, -Y_SIDE_LENGTH, 0);
         pApplet.vertex(0, 0, Z_SIDE_LENGTH);
-        pApplet.vertex(X_SIDE_LENGTH / 2.0f, Y_SIDE_LENGTH / 2.0f, 0);
+        pApplet.vertex(X_SIDE_LENGTH / 2.0f, 0, 0);
 
-        pApplet.vertex(X_SIDE_LENGTH / 2.0f, Y_SIDE_LENGTH / 2.0f, 0);
+        pApplet.vertex(X_SIDE_LENGTH / 2.0f, 0, 0);
         pApplet.vertex(0, 0, Z_SIDE_LENGTH);
-        pApplet.vertex(X_SIDE_LENGTH / 2.0f, -Y_SIDE_LENGTH / 2.0f, 0);
-
-        pApplet.vertex(X_SIDE_LENGTH / 2.0f, -Y_SIDE_LENGTH / 2.0f, 0);
-        pApplet.vertex(0, 0, Z_SIDE_LENGTH);
-        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, -Y_SIDE_LENGTH / 2.0f, 0);
+        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, 0, 0);
     }
 
     private void drawBase() {
-        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, -Y_SIDE_LENGTH / 2.0f, 0);
-        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, Y_SIDE_LENGTH / 2.0f, 0);
-        pApplet.vertex(X_SIDE_LENGTH / 2.0f, Y_SIDE_LENGTH / 2.0f, 0);
-
-        pApplet.vertex(X_SIDE_LENGTH / 2.0f, Y_SIDE_LENGTH / 2.0f, 0);
-        pApplet.vertex(X_SIDE_LENGTH / 2.0f, -Y_SIDE_LENGTH / 2.0f, 0);
-        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, -Y_SIDE_LENGTH / 2.0f, 0);
+        pApplet.vertex(X_SIDE_LENGTH / 2.0f, 0, 0);
+        pApplet.vertex(0, -Y_SIDE_LENGTH, 0);
+        pApplet.vertex(-X_SIDE_LENGTH / 2.0f, 0, 0);
     }
 
     public void update() {
@@ -93,6 +83,18 @@ public class Ship extends Component {
         } else if (isRotateRight) {
             alpha += DELTA_ALPHA;
         }
+    }
+
+    private PVector getForwardPosition() {
+        float deltaTime = (pApplet.millis() - lastTime) / TIME_CONSTANT;
+        lastTime = pApplet.millis();
+        PVector forward = getForward(alpha);
+        if (isMoveForward) {
+            speed = speed < MAX_SPEED ? speed + deltaTime * ACCELERATION : MAX_SPEED;
+        } else {
+            speed = speed > 0 ? speed - deltaTime * ACCELERATION : 0;
+        }
+        return forward.mult(deltaTime * speed);
     }
 
     public void moveForward(boolean on) {
@@ -118,19 +120,4 @@ public class Ship extends Component {
         return backward.mult(distance);
     }
 
-    public PVector getForwardPosition() {
-        float deltaTime = (pApplet.millis() - lastTime) / TIME_CONSTANT;
-        lastTime = pApplet.millis();
-        PVector forward = getForward(alpha);
-        if (isMoveForward) {
-            speed = speed < MAX_SPEED ? speed + deltaTime * ACCELERATION : MAX_SPEED;
-        } else {
-            speed = speed > 0 ? speed - deltaTime * ACCELERATION : 0;
-        }
-        return forward.mult(deltaTime * speed);
-    }
-
-    public boolean isMoveForward() {
-        return isMoveForward;
-    }
 }

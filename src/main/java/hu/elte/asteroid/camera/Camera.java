@@ -57,4 +57,7 @@ public class Camera {
         applyCamera();
     }
 
+    public PVector getEye() {
+        return eye;
+    }
 }
