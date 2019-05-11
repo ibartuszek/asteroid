@@ -38,13 +38,6 @@ public enum AsteroidSize {
         return radius;
     }
 
-    public float getRandomRadius() {
-        float randomPercentage = (
-            RANDOM.nextInt(2 * RANDOM_PERCENTAGE_FACTOR) - RANDOM_PERCENTAGE_FACTOR)
-            / PERCENTAGE_FACTOR;
-        return radius * (1.00f + randomPercentage);
-    }
-
     public float getGravityFactor() {
         return gravityFactor;
     }

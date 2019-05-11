@@ -18,7 +18,6 @@ public class Asteroid extends ParametricSphere {
     private static final float SPEED = 25.0f;
     private static final Random RANDOM = new Random();
 
-    // private final PImage asteroidTexture;
     private final PVector shipPosition;
     private final List<Asteroid> asteroidList;
     private final AsteroidSize size;

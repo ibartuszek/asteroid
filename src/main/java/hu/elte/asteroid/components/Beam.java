@@ -71,17 +71,17 @@ public class Beam extends ParametricComponent {
     @Override
     PVector getPosition(float u, float v) {
         float alpha = u * 2 * PApplet.PI;
-        PVector P = new PVector(DIAMETER / 2 * PApplet.cos(alpha),
+        PVector vector = new PVector(DIAMETER / 2 * PApplet.cos(alpha),
             LENGTH * v,
             DIAMETER / 2 * PApplet.sin(alpha));
-        return P;
+        return vector;
     }
 
     @Override
     PVector getNormal(float u, float v) {
         float alpha = u * 2 * PApplet.PI;
-        PVector P = new PVector(PApplet.cos(alpha), 0, PApplet.sin(alpha));
-        return P;
+        PVector vector = new PVector(PApplet.cos(alpha), 0, PApplet.sin(alpha));
+        return vector;
     }
 
     public void update() {

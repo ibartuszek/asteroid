@@ -115,8 +115,8 @@ public class Ship extends Component {
 
     public PVector getRandomBackPosition(final float distance) {
         PVector backward = getForward(alpha).mult(-1);
-        backward.x = backward.x * RANDOM.nextFloat();
-        backward.z = backward.z * RANDOM.nextFloat();
+        backward.x = backward.x * ((RANDOM.nextInt(80) + 20) / 100.0f);
+        backward.z = backward.z * ((RANDOM.nextInt(80) + 20) / 100.0f);
         return backward.mult(distance);
     }
 

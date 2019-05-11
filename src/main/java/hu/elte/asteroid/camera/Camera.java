@@ -8,7 +8,6 @@ import processing.core.PVector;
 
 public class Camera {
 
-    private static final float TIME_CONSTANT = 1000.0f;
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 600.0f;
     private static final float FOVY = PApplet.PI / 3;
@@ -21,8 +20,6 @@ public class Camera {
     private final PVector eye;
     private final PVector up;
     private final PVector at;
-
-    private float lastTime;
 
     private Camera(final PApplet pApplet, final Ship ship) {
         this.pApplet = pApplet;
